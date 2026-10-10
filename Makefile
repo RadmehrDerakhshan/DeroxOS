@@ -1,0 +1,36 @@
+CC = gcc
+LD = ld
+AS = nasm
+OBJCOPY = objcopy
+
+CFLAGS = -m32 -ffreestanding -fno-pie -nostdlib -Wall -Wextra -c
+LDFLAGS = -m elf_i386 -T linker.ld
+
+all: os-image.bin
+
+boot.bin: boot.asm
+	$(AS) -f bin boot.asm -o boot.bin
+
+entry.o: entry.asm
+	$(AS) -f elf32 entry.asm -o entry.o
+
+kernel.o: kernel.c
+	$(CC) $(CFLAGS) kernel.c -o kernel.o
+
+kernel.elf: entry.o kernel.o
+	$(LD) $(LDFLAGS) entry.o kernel.o -o kernel.elf
+
+kernel.bin: kernel.elf
+	$(OBJCOPY) -O binary kernel.elf kernel.bin
+
+os-image.bin: boot.bin kernel.bin
+	cat boot.bin kernel.bin > os-image.bin
+	dd if=/dev/zero bs=512 count=15 >> os-image.bin 2>/dev/null
+
+run: os-image.bin
+	qemu-system-x86_64 -drive format=raw,file=os-image.bin
+
+clean:
+	rm -f *.bin *.o *.elf
+
+.PHONY: all run clean
