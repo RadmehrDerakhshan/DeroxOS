@@ -1,0 +1,6 @@
+*.o
+*.bin
+*.elf
+os-image.bin
+.vscode/
+*.swp

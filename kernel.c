@@ -1,43 +1,51 @@
-#define VGA_ADDRESS 0xB8000
-#define WHITE_ON_BLACK 0x0F
-#define RED_ON_BLACK 0x0C
-#define GREEN_ON_BLACK 0x0A
-#define YELLOW_ON_BLACK 0x0E
-
-void clear_screen() {
-    unsigned char* vga = (unsigned char*) VGA_ADDRESS;
-    for (int i = 0; i < 80 * 25 * 2; i += 2) {
-        vga[i]   = ' ';
-        vga[i+1] = WHITE_ON_BLACK;
-    }
-}
-
-void put_char(char c, int row, int col, unsigned char color) {
-    unsigned char* vga = (unsigned char*) VGA_ADDRESS;
-    int offset = (row * 80 + col) * 2;
-    vga[offset]   = c;
-    vga[offset+1] = color;
-}
-
-void print_string(const char* str, int row, unsigned char color) {
-    int col = 0;
-    while (*str) {
-        if (*str == '\n') {
-            row++;
-            col = 0;
-        } else {
-            put_char(*str, row, col, color);
-            col++;
-        }
-        str++;
-    }
-}
+#include "vga.h"
 
 void kernel_main() {
-    clear_screen();
-    print_string("Hello from C kernel!", 0, WHITE_ON_BLACK);
-    print_string("This is running in protected mode.", 1, GREEN_ON_BLACK);
-    print_string("C is working!", 2, YELLOW_ON_BLACK);
+    vga_init();
+
+    // ============ تست ۱: چاپ ساده ============
+    vga_puts("=== VGA Test ===\n\n");
+
+    // ============ تست ۲: چاپ عدد ============
+    vga_puts("Number: ");
+    vga_print_int(42);
+    vga_putchar('\n');
+
+    vga_puts("Negative: ");
+    vga_print_int(-100);
+    vga_putchar('\n');
+
+    vga_puts("Hex: ");
+    vga_print_hex(0xDEADBEEF);
+    vga_putchar('\n');
+
+    // ============ تست ۳: رنگ ============
+    vga_set_color((VGA_BLACK << 4) | VGA_LIGHT_RED);
+    vga_puts("This is RED!\n");
+
+    vga_set_color((VGA_BLACK << 4) | VGA_LIGHT_GREEN);
+    vga_puts("This is GREEN!\n");
+
+    vga_set_color(VGA_DEFAULT_COLOR);
+    vga_puts("Back to white.\n\n");
+
+    // ============ تست ۴: اسکرول ============
+    vga_puts("Testing scroll...\n");
+
+    for (int i = 0; i < 30; i++) {
+        vga_puts("Line ");
+        vga_print_int(i);
+        vga_putchar('\n');
+    }
+
+    vga_puts("\nIf you see this, scroll works!\n");
+
+    // ============ تست ۵: موقعیت کرسر ============
+    vga_puts("Cursor at row=");
+    vga_print_int(vga_get_row());
+    vga_puts(", col=");
+    vga_print_int(vga_get_col());
+    vga_putchar('\n');
 
     while (1) { }
 }
