@@ -8,7 +8,7 @@
 #define VGA_WIDTH       80
 #define VGA_HEIGHT      25
 
-// رنگ‌ها (4 بیت پایین: متن، 4 بیت بالا: پس‌زمینه)
+// رنگ‌ها
 #define VGA_BLACK       0x0
 #define VGA_BLUE        0x1
 #define VGA_GREEN       0x2
@@ -26,7 +26,6 @@
 #define VGA_YELLOW      0xE
 #define VGA_WHITE       0xF
 
-// رنگ پیش‌فرض: متن سفید روی پس‌زمینه مشکی
 #define VGA_DEFAULT_COLOR ((VGA_BLACK << 4) | VGA_WHITE)
 
 // توابع اصلی
@@ -41,8 +40,11 @@ void vga_scroll();
 void vga_print_int(int n);
 void vga_print_hex(uint32_t n);
 
-// دیباگ: موقعیت فعلی کرسر
+// دیباگ
 int vga_get_row();
 int vga_get_col();
+
+// printf
+void vga_printf(const char* fmt, ...);
 
 #endif

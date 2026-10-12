@@ -3,49 +3,38 @@
 void kernel_main() {
     vga_init();
 
-    // ============ تست ۱: چاپ ساده ============
-    vga_puts("=== VGA Test ===\n\n");
+    vga_printf("=== printf Test ===\n\n");
 
-    // ============ تست ۲: چاپ عدد ============
-    vga_puts("Number: ");
-    vga_print_int(42);
-    vga_putchar('\n');
+    // ============ تست‌های ساده ============
+    vga_printf("Hello, world!\n");
+    vga_printf("Number: %d\n", 42);
+    vga_printf("Negative: %d\n", -100);
+    vga_printf("Hex: %x\n", 0xDEADBEEF);
+    vga_printf("Char: %c\n", 'A');
+    vga_printf("String: %s\n", "This is a string");
+    vga_printf("Percent: %%\n");
 
-    vga_puts("Negative: ");
-    vga_print_int(-100);
-    vga_putchar('\n');
+    // ============ تست چند آرگومان ============
+    vga_printf("\nMultiple: %d + %d = %d\n", 3, 4, 3 + 4);
 
-    vga_puts("Hex: ");
-    vga_print_hex(0xDEADBEEF);
-    vga_putchar('\n');
-
-    // ============ تست ۳: رنگ ============
+    // ============ تست رنگ + printf ============
     vga_set_color((VGA_BLACK << 4) | VGA_LIGHT_RED);
-    vga_puts("This is RED!\n");
+    vga_printf("Red: %d\n", 123);
 
     vga_set_color((VGA_BLACK << 4) | VGA_LIGHT_GREEN);
-    vga_puts("This is GREEN!\n");
+    vga_printf("Green: %s\n", "success");
 
     vga_set_color(VGA_DEFAULT_COLOR);
-    vga_puts("Back to white.\n\n");
+    vga_printf("Normal again.\n");
 
-    // ============ تست ۴: اسکرول ============
-    vga_puts("Testing scroll...\n");
-
+    // ============ تست اسکرول با printf ============
+    vga_printf("\nTesting scroll with printf...\n");
     for (int i = 0; i < 30; i++) {
-        vga_puts("Line ");
-        vga_print_int(i);
-        vga_putchar('\n');
+        vga_printf("Line %d\n", i);
     }
 
-    vga_puts("\nIf you see this, scroll works!\n");
-
-    // ============ تست ۵: موقعیت کرسر ============
-    vga_puts("Cursor at row=");
-    vga_print_int(vga_get_row());
-    vga_puts(", col=");
-    vga_print_int(vga_get_col());
-    vga_putchar('\n');
+    vga_printf("\nDone! Cursor at row=%d, col=%d\n",
+               vga_get_row(), vga_get_col());
 
     while (1) { }
 }

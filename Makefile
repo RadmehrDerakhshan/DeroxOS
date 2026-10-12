@@ -1,10 +1,9 @@
 CC = gcc
-LD = ld
 AS = nasm
 OBJCOPY = objcopy
 
 CFLAGS = -m32 -ffreestanding -fno-pie -nostdlib -Wall -Wextra -c
-LDFLAGS = -m elf_i386 -T linker.ld
+LDFLAGS = -m32 -ffreestanding -fno-pie -nostdlib -T linker.ld
 
 OBJS = entry.o kernel.o vga.o
 
@@ -20,7 +19,7 @@ entry.o: entry.asm
 	$(CC) $(CFLAGS) $< -o $@
 
 kernel.elf: $(OBJS)
-	$(LD) $(LDFLAGS) $(OBJS) -o kernel.elf
+	$(CC) $(LDFLAGS) $(OBJS) -o kernel.elf -lgcc
 
 kernel.bin: kernel.elf
 	$(OBJCOPY) -O binary kernel.elf kernel.bin
