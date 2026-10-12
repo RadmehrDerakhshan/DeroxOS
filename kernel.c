@@ -2,20 +2,20 @@
 #include "idt.h"
 #include "isr.h"
 #include "keyboard.h"
+#include "timer.h"
 
 void kernel_main() {
     vga_init();
-    vga_printf("=== Keyboard Test ===\n\n");
+    vga_printf("=== Timer Test ===\n\n");
 
     idt_init();
     pic_remap();
     keyboard_init();
+    timer_init(100);
 
-    vga_printf("Enabling interrupts...\n");
     __asm__ volatile ("sti");
 
-    vga_printf("\nType something: ");
-    vga_set_color((VGA_BLACK << 4) | VGA_LIGHT_GREEN);
+    vga_printf("\nWaiting for timer ticks...\n\n");
 
     while (1) { }
 }
