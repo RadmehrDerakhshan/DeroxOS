@@ -1,5 +1,6 @@
 #include "timer.h"
 #include "vga.h"
+#include "task.h"
 
 #define PIT_CHANNEL0 0x40
 #define PIT_COMMAND  0x43
@@ -25,8 +26,13 @@ void timer_handler(struct regs* r) {
     (void) r;
     ticks++;
 
-    if (ticks % TIMER_FREQ == 0) {
-        vga_printf("[%d sec] ", (int)(ticks / TIMER_FREQ));
+    // The ONLY place we call schedule() is here.
+    if (ticks % 10 == 0) {
+        schedule();
+    }
+
+    if (ticks % 100 == 0) {
+        vga_printf("[%d sec] ", (int)(ticks / 100));
     }
 }
 

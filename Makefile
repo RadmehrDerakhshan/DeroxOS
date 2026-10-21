@@ -5,7 +5,7 @@ OBJCOPY = objcopy
 CFLAGS = -m32 -ffreestanding -fno-pie -nostdlib -Wall -Wextra -c
 LDFLAGS = -m32 -ffreestanding -fno-pie -nostdlib -T linker.ld
 
-OBJS = entry.o kernel.o vga.o idt.o isr.o isr_asm.o keyboard.o timer.o kheap.o paging.o
+OBJS = entry.o kernel.o vga.o idt.o isr.o isr_asm.o keyboard.o timer.o kheap.o paging.o task.o switch.o
 
 all: os-image.bin
 
@@ -17,6 +17,9 @@ entry.o: entry.asm
 
 isr_asm.o: isr.asm
 	$(AS) -f elf32 isr.asm -o isr_asm.o
+
+switch.o: switch.asm
+	$(AS) -f elf32 switch.asm -o switch.o
 
 %.o: %.c
 	$(CC) $(CFLAGS) $< -o $@
